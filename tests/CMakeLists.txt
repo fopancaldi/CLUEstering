@@ -40,28 +40,21 @@ include(FetchContent)
 
 set(_clue_alpaka_submodule ${CMAKE_CURRENT_SOURCE_DIR}/../extern/alpaka)
 if(EXISTS ${_clue_alpaka_submodule}/CMakeLists.txt)
-  set(_clue_build_testing ${BUILD_TESTING})
-  set(BUILD_TESTING
-      OFF
-      CACHE BOOL "" FORCE)
-  add_subdirectory(${_clue_alpaka_submodule} ${CMAKE_CURRENT_BINARY_DIR}/alpaka)
-  set(BUILD_TESTING
-      ${_clue_build_testing}
-      CACHE BOOL "" FORCE)
+  block()
+  set(BUILD_TESTING OFF)
+  FetchContent_MakeAvailable(alpaka)
+  endblock()
 else()
   find_package(alpaka 2.2.0)
   if(NOT alpaka_FOUND)
-    set(_clue_build_testing ${BUILD_TESTING})
-    set(BUILD_TESTING
-        OFF
-        CACHE BOOL "" FORCE)
     FetchContent_Declare(
       alpaka
-      URL https://github.com/alpaka-group/alpaka/archive/refs/tags/2.2.0.tar.gz)
+      GIT_REPOSITORY https://github.com/alpaka-group/alpaka.git
+      GIT_TAG 2.2.0)
+    block()
+    set(BUILD_TESTING OFF)
     FetchContent_MakeAvailable(alpaka)
-    set(BUILD_TESTING
-        ${_clue_build_testing}
-        CACHE BOOL "" FORCE)
+    endblock()
   endif()
 endif()
 
